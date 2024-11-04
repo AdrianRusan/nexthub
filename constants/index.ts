@@ -1,30 +1,30 @@
 export const sidebarLinks = [
   {
-    label: 'Acasă TV',
+    label: 'Home',
     route: '/',
     imgUrl: '/icons/Home.svg',
   },
   {
-    label: 'Posterioare',
+    label: 'Upcoming Calls',
     route: '/upcoming',
     imgUrl: '/icons/upcoming.svg',
   },
   {
-    label: 'Anterioare',
+    label: 'Previous Calls',
     route: '/previous',
     imgUrl: '/icons/previous.svg',
   },
   {
-    label: 'Înregistrări',
+    label: 'Recordings',
     route: '/recordings',
     imgUrl: '/icons/Video.svg',
   },
   {
-    label: 'Căsuța Noastră',
+    label: 'My Room',
     route: '/personal-room',
     imgUrl: '/icons/add-personal.svg',
   },
-]
+];
 
 export const avatarImages = [
   '/images/avatar-1.jpeg',
@@ -32,4 +32,4 @@ export const avatarImages = [
   '/images/avatar-3.png',
   '/images/avatar-4.png',
   '/images/avatar-5.png',
-]
+];

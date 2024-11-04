@@ -11,8 +11,8 @@ import { Toaster } from "@/components/ui/toaster";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Șocâtă",
-  description: "Șocâtă este o platformă de videoconferințe care îți oferă o experiență de neegalat în comunicarea online cu orice număr de șocâte.",
+  title: "NextHub",
+  description: "NextHub is a video conferencing platform that offers an unparalleled experience in online communication with any number of participants.",
   icons: {
     icon: "/icons/logo.svg",
   }

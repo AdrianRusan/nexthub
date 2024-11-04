@@ -15,6 +15,9 @@ export const useGetCalls = () => {
 
       setIsLoading(true);
 
+        const sortDirection = (call: Call) => call.state.endedAt ? -1 : 1;
+
+
       try {
         const {calls} = await client.queryCalls({
           sort: [{field: 'starts_at', direction: -1}],
@@ -51,6 +54,7 @@ export const useGetCalls = () => {
   return {
     endedCalls,
     upcomingCalls,
+    upcomingHomeCalls: upcomingCalls.slice(0, 3),
     callRecordings: calls,
     isLoading
   }

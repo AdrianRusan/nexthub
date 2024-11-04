@@ -45,7 +45,7 @@ const MeetingCard = ({ title, date, icon, isPreviousMeeting, buttonIcon1, button
             <Button
               onClick={() => {
                 navigator.clipboard.writeText(link);
-                toast({ title: "Link copiat", duration: 5000 })
+                toast({ title: "Link copied", duration: 5000 })
               }}
               className='bg-dark-4 px-6'
             >
@@ -55,7 +55,7 @@ const MeetingCard = ({ title, date, icon, isPreviousMeeting, buttonIcon1, button
                 width={20}
                 height={20}
               />
-              &nbsp; Copiază link-ul
+              &nbsp; Copy link
             </Button>
           </div>
         )}

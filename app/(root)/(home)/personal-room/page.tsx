@@ -10,8 +10,8 @@ import { useRouter } from "next/navigation";
 
 const Table = ({ title, description }: { title: string, description?: string }) => (
   <div className="flex flex-col items-start gap-2 xl:flex-row">
-    <h1 className="text-base font-medium text-sky-1 lg:text-xl xl:min-w-32">{title}</h1>
-    <h2 className="truncate text-sm font-bold max-sm:max-w-[320px] lg:text-xl">{description}</h2>
+    <h1 className="text-base font-medium text-sky-1 lg:text-xl xl:min-w-32 w-1/6">{title}</h1>
+    <h2 className="truncate text-sm font-bold max-sm:max-w-[320px] lg:text-xl w-5/6">{description}</h2>
   </div>
 )
 
@@ -47,33 +47,33 @@ const PersonalRoom = () => {
   return (
     <section className='flex size-full flex-col gap-10 text-white'>
       <h1 className='text-3xl font-bold'>
-        Căsuța Noastră
+        My Room
       </h1>
 
       <div className="flex w-full flex-col gap-8 xl:max-w-[900px]">
         <Table
-          title='Ce-i asta?'
-          description={`Camera de conferințe a lui ${user?.username}`}
+          title='What is this?'
+          description={user?.username ? `${user.username[0].toUpperCase() + user.username.slice(1)}'s Personal Room` : "Unknown User's Personal Room"}
         />
         <Table
-          title='Id-ul camerei de conferințe'
+          title='Meeting ID'
           description={meetingId!}
         />
         <Table
-          title='Link de invitație'
+          title='Invitation Link'
           description={meetingLink}
         />
       </div>
 
       <div className="flex gap-5">
         <Button className="bg-blue-1" onClick={startRoom}>
-          Intră în cameră
+          Enter Room
         </Button>
         <Button className="bg-dark-3" onClick={() => {
           navigator.clipboard.writeText(meetingLink);
-          toast({ title: "Link copiat", duration: 5000 })
+          toast({ title: "Link copied", duration: 5000 })
         }}>
-          Copiază invitația
+          Copy the Invitation Link
         </Button>
       </div>
     </section>)
