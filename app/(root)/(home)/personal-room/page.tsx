@@ -53,7 +53,7 @@ const PersonalRoom = () => {
       <div className="flex w-full flex-col gap-8 xl:max-w-[900px]">
         <Table
           title='What is this?'
-          description={user?.username ? `${user.username[0].toUpperCase() + user.username.slice(1)}'s Personal Room` : "Unknown User's Personal Room"}
+          description={user?.username ? `${user.username.split(/-|_/).map(word => word[0].toUpperCase() + word.slice(1)).join(' ')}'s Personal Room` : "Unknown User's Personal Room"}
         />
         <Table
           title='Meeting ID'
