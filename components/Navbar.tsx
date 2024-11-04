@@ -10,13 +10,13 @@ const Navbar = () => {
       <Link href="/" className='flex items-center gap-1'>
         <Image
           src="/icons/logo.svg"
-          alt='Șocâtă logo'
+          alt='NextHub logo'
           width={32}
           height={32}
           className='max-sm:size-10'
         />
         <p className='text-[26px] font-extrabold text-white max-sm:hidden'>
-          Șocâtă
+          NextHub
         </p>
       </Link>
 

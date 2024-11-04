@@ -33,7 +33,7 @@ const MeetingSetup = ({ setIsSetupComplete }: { setIsSetupComplete: (value: bool
             checked={isMicCamToggledOn}
             onChange={(e) => setIsMicCamToggledOn(e.target.checked)}
           />
-          Alătură-te fără microfon și cameră
+          Join without Microphone and Camera
         </label>
         <DeviceSettings />
       </div>
@@ -41,7 +41,7 @@ const MeetingSetup = ({ setIsSetupComplete }: { setIsSetupComplete: (value: bool
         call.join();
         setIsSetupComplete(true);
       }}>
-        Alătură-te apelului
+        Join the Call
       </Button>
     </div>
   )

@@ -54,6 +54,13 @@
   -webkit-backdrop-filter: blur(8px);
 }
 
+
+/* React Date Picker */
+.react-datepicker__day--outside-month {
+  opacity: 0.75;
+  pointer-events: none;
+}
+
 /* ==== clerk class override ===== */
 
 .cl-userButtonPopoverActionButtonIcon,

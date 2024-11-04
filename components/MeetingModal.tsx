@@ -2,10 +2,6 @@ import { ReactNode } from 'react'
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog"
 import Image from 'next/image'
 import { Button } from './ui/button'
@@ -47,7 +43,7 @@ const MeetingModal = ({ isOpen, onClose, title, className, children, handleClick
             {buttonIcon && (
               <Image src={buttonIcon} alt="button icon" width={13} height={13} />
             )} &nbsp;
-            {buttonText || 'Programează Ședința'}
+            {buttonText || 'Schedule Meeting'}
           </Button>
         </div>
       </DialogContent>

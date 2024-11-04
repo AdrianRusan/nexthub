@@ -16,7 +16,7 @@ const DateTime = () => {
         hour12: true,
       });
 
-      const newDate = now.toLocaleDateString('ro-RO', {
+      const newDate = now.toLocaleDateString('en-US', {
         weekday: 'long',
         day: 'numeric',
         month: 'long',

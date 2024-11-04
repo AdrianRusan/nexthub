@@ -25,7 +25,7 @@ const StreamVideoProvider = ({ children }: { children: ReactNode }) => {
       apiKey,
       user: {
         id: user?.id,
-        name: user?.username || user?.id,
+        name: user.username?.split(/-|_/).map(word => word[0].toUpperCase() + word.slice(1)).join(' ') || user?.id,
         image: user?.imageUrl,
       },
       tokenProvider,
