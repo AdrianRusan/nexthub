@@ -20,8 +20,8 @@ const NextMeeting = ({ title, date, buttonIcon1, buttonText, handleClick, link }
 
 
   return (
-    <div className='flex justify-start items-center gap-5'>
-      <h2 className='glassmorphism max-w-[500px] rounded py-2 text-center text-base font-normal w-2/3' >{title} - {date}</h2>
+    <div className='flex flex-col xl:flex-row justify-start items-center gap-5'>
+      <h2 className='glassmorphism rounded-xl p-2 text-center text-base font-normal w-3/3' >{title} - {date}</h2>
       <div className='flex gap-2'>
         <Button onClick={handleClick} className='rounded bg-blue-1 px-6'>
           {buttonIcon1 && (

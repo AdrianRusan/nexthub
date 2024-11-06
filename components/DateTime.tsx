@@ -17,9 +17,9 @@ const DateTime = () => {
       });
 
       const newDate = now.toLocaleDateString('en-US', {
-        weekday: 'long',
+        weekday: 'short',
         day: 'numeric',
-        month: 'long',
+        month: 'short',
         year: 'numeric',
       }).replace(/(^|\s)\S/g, (l) => l.toUpperCase());
 
@@ -34,7 +34,7 @@ const DateTime = () => {
   }, []);
 
   return (
-    <div className='flex flex-col gap-2'>
+    <div className='flex flex-col gap-2 text-center lg:text-start'>
       <h1 className='text-4xl font-extrabold lg:text-7xl'>
         {time}
       </h1>

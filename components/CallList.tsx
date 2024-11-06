@@ -14,9 +14,9 @@ import NextMeeting from './NextMeeting';
 const formatMeetingDate = (dateInput) => {
   const date = new Date(dateInput);
   let formattedDate = new Intl.DateTimeFormat('en-US', {
-    weekday: 'long',
+    weekday: 'short',
     year: 'numeric',
-    month: 'long',
+    month: 'short',
     day: 'numeric',
   }).format(date);
 
@@ -140,7 +140,7 @@ const CallList = ({ type }: { type: 'ended' | 'upcoming' | 'upcomingHome' | 'rec
                 isPreviousMeeting={type === 'ended'}
                 buttonIcon1={type === 'recordings' ? '/icons/play.svg' : undefined}
                 buttonText={type === 'recordings' ? 'Play' : 'Start'}
-                handleClick={type === 'recordings' ? () => router.push(`${meeting.url}`) : () => router.push(`/meeting/${meeting.id}`)}
+                handleClick={type === 'recordings' ? () => window.open(`${meeting.url}`, '_blank') : () => window.open(`/meeting/${meeting.id}`)}
                 link={type === 'recordings' ? meeting.url : `${process.env.NEXT_PUBLIC_BASE_URL}/meeting/${meeting.id}`}
               />
             </div>
