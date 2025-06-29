@@ -1,0 +1,262 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  ADMIN
+  USER
+  GUEST
+}
+
+enum MeetingStatus {
+  SCHEDULED
+  ACTIVE
+  ENDED
+  CANCELLED
+}
+
+enum RecordingStatus {
+  PROCESSING
+  READY
+  FAILED
+}
+
+model User {
+  id                String    @id @default(cuid())
+  clerkId           String    @unique
+  email             String    @unique
+  firstName         String?
+  lastName          String?
+  username          String?   @unique
+  imageUrl          String?
+  role              UserRole  @default(USER)
+  isActive          Boolean   @default(true)
+  lastActiveAt      DateTime?
+  emailVerified     Boolean   @default(false)
+  twoFactorEnabled  Boolean   @default(false)
+  
+  // Relationships
+  organizationId    String?
+  organization      Organization? @relation(fields: [organizationId], references: [id])
+  
+  meetingsCreated   Meeting[] @relation("MeetingCreator")
+  meetingParticipants MeetingParticipant[]
+  recordings        Recording[]
+  usageAnalytics    UsageAnalytics[]
+  auditLogs         AuditLog[]
+  
+  // Timestamps
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  deletedAt         DateTime? // Soft delete
+  
+  @@map("users")
+}
+
+model Organization {
+  id              String   @id @default(cuid())
+  name            String
+  slug            String   @unique
+  domain          String?  @unique
+  logo            String?
+  settings        Json?    // Custom organization settings
+  isActive        Boolean  @default(true)
+  
+  // Plan and billing
+  planType        String   @default("free") // free, pro, enterprise
+  billingEmail    String?
+  subscriptionId  String?  @unique
+  
+  // Relationships
+  users           User[]
+  meetings        Meeting[]
+  recordings      Recording[]
+  usageAnalytics  UsageAnalytics[]
+  
+  // Timestamps
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  deletedAt       DateTime? // Soft delete
+  
+  @@map("organizations")
+}
+
+model Meeting {
+  id              String        @id @default(cuid())
+  streamId        String        @unique // Stream.io call ID
+  title           String
+  description     String?
+  scheduledAt     DateTime
+  startedAt       DateTime?
+  endedAt         DateTime?
+  duration        Int?          // Duration in minutes
+  status          MeetingStatus @default(SCHEDULED)
+  isRecording     Boolean       @default(false)
+  isPrivate       Boolean       @default(false)
+  maxParticipants Int?
+  settings        Json?         // Meeting-specific settings (layout, permissions, etc.)
+  
+  // Relationships
+  creatorId       String
+  creator         User          @relation("MeetingCreator", fields: [creatorId], references: [id])
+  organizationId  String?
+  organization    Organization? @relation(fields: [organizationId], references: [id])
+  
+  participants    MeetingParticipant[]
+  recordings      Recording[]
+  analytics       MeetingAnalytics?
+  
+  // Timestamps
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  deletedAt       DateTime?     // Soft delete
+  
+  @@map("meetings")
+}
+
+model MeetingParticipant {
+  id            String    @id @default(cuid())
+  meetingId     String
+  userId        String
+  joinedAt      DateTime?
+  leftAt        DateTime?
+  duration      Int?      // Duration in minutes
+  role          String    @default("participant") // host, moderator, participant
+  permissions   Json?     // Participant-specific permissions
+  
+  // Relationships
+  meeting       Meeting   @relation(fields: [meetingId], references: [id], onDelete: Cascade)
+  user          User      @relation(fields: [userId], references: [id])
+  
+  // Timestamps
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  
+  @@unique([meetingId, userId])
+  @@map("meeting_participants")
+}
+
+model Recording {
+  id              String          @id @default(cuid())
+  meetingId       String
+  streamRecordingId String?       @unique // Stream.io recording ID
+  title           String
+  filename        String?
+  url             String?
+  thumbnailUrl    String?
+  duration        Int?            // Duration in minutes
+  fileSize        BigInt?         // File size in bytes
+  status          RecordingStatus @default(PROCESSING)
+  isPublic        Boolean         @default(false)
+  downloadCount   Int             @default(0)
+  
+  // Relationships
+  meeting         Meeting         @relation(fields: [meetingId], references: [id])
+  creatorId       String
+  creator         User            @relation(fields: [creatorId], references: [id])
+  organizationId  String?
+  organization    Organization?   @relation(fields: [organizationId], references: [id])
+  
+  // Timestamps
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+  deletedAt       DateTime?       // Soft delete
+  
+  @@map("recordings")
+}
+
+model MeetingAnalytics {
+  id                    String   @id @default(cuid())
+  meetingId             String   @unique
+  totalParticipants     Int      @default(0)
+  maxConcurrentUsers    Int      @default(0)
+  averageDuration       Int?     // Average participant duration in minutes
+  totalDuration         Int?     // Total meeting duration in minutes
+  chatMessages          Int      @default(0)
+  screenShares          Int      @default(0)
+  recordingDuration     Int?     // Recording duration in minutes
+  bandwidthUsage        BigInt?  // Total bandwidth used in bytes
+  qualityMetrics        Json?    // Video quality, audio quality, connection issues
+  
+  // Relationships
+  meeting               Meeting  @relation(fields: [meetingId], references: [id], onDelete: Cascade)
+  
+  // Timestamps
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+  
+  @@map("meeting_analytics")
+}
+
+model UsageAnalytics {
+  id                String        @id @default(cuid())
+  userId            String
+  organizationId    String?
+  date              DateTime      @db.Date
+  meetingsCreated   Int           @default(0)
+  meetingsJoined    Int           @default(0)
+  totalMeetingTime  Int           @default(0) // Total time in minutes
+  recordingsCreated Int           @default(0)
+  bandwidthUsed     BigInt        @default(0) // Bandwidth in bytes
+  storageUsed       BigInt        @default(0) // Storage in bytes
+  
+  // Relationships
+  user              User          @relation(fields: [userId], references: [id])
+  organization      Organization? @relation(fields: [organizationId], references: [id])
+  
+  // Timestamps
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+  
+  @@unique([userId, date])
+  @@unique([organizationId, date])
+  @@map("usage_analytics")
+}
+
+model AuditLog {
+  id            String   @id @default(cuid())
+  userId        String?
+  action        String   // CREATE_MEETING, JOIN_MEETING, DELETE_RECORDING, etc.
+  resource      String   // meeting, recording, user, etc.
+  resourceId    String?
+  details       Json?    // Additional details about the action
+  ipAddress     String?
+  userAgent     String?
+  metadata      Json?    // Additional metadata
+  
+  // Relationships
+  user          User?    @relation(fields: [userId], references: [id])
+  
+  // Timestamps
+  createdAt     DateTime @default(now())
+  
+  @@map("audit_logs")
+}
+
+// Indexes for performance
+@@index([User.clerkId])
+@@index([User.email])
+@@index([User.organizationId])
+@@index([Meeting.creatorId])
+@@index([Meeting.scheduledAt])
+@@index([Meeting.status])
+@@index([Meeting.organizationId])
+@@index([MeetingParticipant.meetingId])
+@@index([MeetingParticipant.userId])
+@@index([Recording.meetingId])
+@@index([Recording.creatorId])
+@@index([Recording.status])
+@@index([UsageAnalytics.userId])
+@@index([UsageAnalytics.organizationId])
+@@index([UsageAnalytics.date])
+@@index([AuditLog.userId])
+@@index([AuditLog.action])
+@@index([AuditLog.createdAt])
