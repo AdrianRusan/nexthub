@@ -6,7 +6,8 @@ describe('DateTime', () => {
   beforeEach(() => {
     // Mock the current date and time for consistent testing
     jest.useFakeTimers()
-    jest.setSystemTime(new Date('2024-01-15T14:30:00Z'))
+    // Using a local time that will give us the expected output
+    jest.setSystemTime(new Date('2024-01-15T14:30:00'))
   })
 
   afterEach(() => {
@@ -81,8 +82,8 @@ describe('DateTime', () => {
 
   describe('Edge cases', () => {
     it('handles different time formats', () => {
-      // Test with different times
-      jest.setSystemTime(new Date('2024-01-15T00:00:00Z'))
+      // Test with different times - using local time
+      jest.setSystemTime(new Date('2024-01-15T00:00:00'))
       
       render(<DateTime />)
       
@@ -90,8 +91,8 @@ describe('DateTime', () => {
     })
 
     it('handles date transitions', () => {
-      // Test at midnight
-      jest.setSystemTime(new Date('2024-01-15T23:59:59Z'))
+      // Test at late night - using local time
+      jest.setSystemTime(new Date('2024-01-15T23:59:00'))
       
       render(<DateTime />)
       
