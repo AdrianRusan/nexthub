@@ -33,35 +33,36 @@ describe('Home Page', () => {
     render(<Home />)
     
     // Check that the main container is present
-    const mainSection = screen.getByRole('main') || screen.getByTestId('home-section')
+    const mainSection = document.querySelector('section')
+    expect(mainSection).toBeInTheDocument()
     expect(screen.getByTestId('date-time')).toBeInTheDocument()
     expect(screen.getByTestId('call-list')).toBeInTheDocument()
     expect(screen.getByTestId('meeting-type-list')).toBeInTheDocument()
   })
 
-  it('displays DateTime component', () => {
+  it('renders DateTime component', () => {
     render(<Home />)
     
-    const dateTime = screen.getByTestId('date-time')
-    expect(dateTime).toBeInTheDocument()
-    expect(dateTime).toHaveTextContent('Monday, January 15 • 2:30 PM')
+    const dateTimeComponent = screen.getByTestId('date-time')
+    expect(dateTimeComponent).toBeInTheDocument()
+    expect(dateTimeComponent).toHaveTextContent('Monday, January 15 • 2:30 PM')
   })
 
-  it('displays CallList with correct type', () => {
+  it('renders CallList with correct type', () => {
     render(<Home />)
     
-    const callList = screen.getByTestId('call-list')
-    expect(callList).toBeInTheDocument()
-    expect(callList).toHaveAttribute('data-type', 'upcomingHome')
+    const callListComponent = screen.getByTestId('call-list')
+    expect(callListComponent).toBeInTheDocument()
+    expect(callListComponent).toHaveAttribute('data-type', 'upcomingHome')
   })
 
-  it('displays MeetingTypeList component', () => {
+  it('renders MeetingTypeList component', () => {
     render(<Home />)
     
-    const meetingTypeList = screen.getByTestId('meeting-type-list')
-    expect(meetingTypeList).toBeInTheDocument()
+    const meetingTypeListComponent = screen.getByTestId('meeting-type-list')
+    expect(meetingTypeListComponent).toBeInTheDocument()
     
-    // Check that all meeting options are present
+    // Check if all meeting types are present
     expect(screen.getByText('New Meeting')).toBeInTheDocument()
     expect(screen.getByText('Schedule Meeting')).toBeInTheDocument()
     expect(screen.getByText('Recordings')).toBeInTheDocument()
@@ -71,12 +72,13 @@ describe('Home Page', () => {
   it('has proper layout structure', () => {
     render(<Home />)
     
-    // The main section should have proper flex layout classes
+    // Check that the main section has the right classes
     const mainSection = document.querySelector('section')
     expect(mainSection).toBeInTheDocument()
-    expect(mainSection).toHaveClass('flex')
-    expect(mainSection).toHaveClass('size-full')
-    expect(mainSection).toHaveClass('flex-col')
+    
+    // Verify the hero section is present
+    const heroSection = document.querySelector('.bg-hero')
+    expect(heroSection).toBeInTheDocument()
   })
 
   it('displays hero section with background', () => {
@@ -167,9 +169,14 @@ describe('Home Page', () => {
     it('has proper semantic structure', () => {
       render(<Home />)
       
-      // Should use semantic HTML
+      // Should have a main section
       const section = document.querySelector('section')
       expect(section).toBeInTheDocument()
+      
+      // Components should be properly nested
+      expect(screen.getByTestId('date-time')).toBeInTheDocument()
+      expect(screen.getByTestId('call-list')).toBeInTheDocument()
+      expect(screen.getByTestId('meeting-type-list')).toBeInTheDocument()
     })
 
     it('provides proper text contrast', () => {
@@ -221,6 +228,27 @@ describe('Home Page', () => {
       expect(screen.getByTestId('date-time')).toBeInTheDocument()
       expect(screen.getByTestId('call-list')).toBeInTheDocument()
       expect(screen.getByTestId('meeting-type-list')).toBeInTheDocument()
+    })
+  })
+
+  describe('Responsive Design', () => {
+    it('has responsive classes for different screen sizes', () => {
+      render(<Home />)
+      
+      // The main section should have responsive classes
+      const mainSection = document.querySelector('section')
+      expect(mainSection).toHaveClass('flex')
+      expect(mainSection).toHaveClass('size-full')
+      expect(mainSection).toHaveClass('flex-col')
+      expect(mainSection).toHaveClass('gap-10')
+      expect(mainSection).toHaveClass('text-white')
+    })
+
+    it('hero section has responsive padding', () => {
+      render(<Home />)
+      
+      const heroContent = document.querySelector('.max-md\\:px-5')
+      expect(heroContent).toBeInTheDocument()
     })
   })
 })

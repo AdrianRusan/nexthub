@@ -29,14 +29,15 @@ describe('HomeCard', () => {
   it('applies custom className', () => {
     render(<HomeCard {...defaultProps} />)
     
-    const card = screen.getByText('Test Title').closest('div')
+    // Get the root div with the button role
+    const card = screen.getByRole('button')
     expect(card).toHaveClass('bg-test-color')
   })
 
   it('calls handleClick when card is clicked', () => {
     render(<HomeCard {...defaultProps} />)
     
-    const card = screen.getByText('Test Title').closest('div')
+    const card = screen.getByRole('button')
     fireEvent.click(card!)
     
     expect(defaultProps.handleClick).toHaveBeenCalledTimes(1)
@@ -45,7 +46,7 @@ describe('HomeCard', () => {
   it('supports keyboard navigation', () => {
     render(<HomeCard {...defaultProps} />)
     
-    const card = screen.getByText('Test Title').closest('div')
+    const card = screen.getByRole('button')
     
     // Simulate Enter key press
     fireEvent.keyDown(card!, { key: 'Enter' })
@@ -59,7 +60,7 @@ describe('HomeCard', () => {
   it('has proper accessibility attributes', () => {
     render(<HomeCard {...defaultProps} />)
     
-    const card = screen.getByText('Test Title').closest('div')
+    const card = screen.getByRole('button')
     expect(card).toHaveAttribute('role', 'button')
     expect(card).toHaveAttribute('tabIndex', '0')
   })

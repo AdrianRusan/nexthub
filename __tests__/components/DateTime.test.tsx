@@ -1,11 +1,6 @@
 import React from 'react'
-import { render, screen } from '@testing-library/react'
+import { render, screen, act } from '@testing-library/react'
 import DateTime from '@/components/DateTime'
-
-// Mock date-fns functions
-jest.mock('date-fns', () => ({
-  format: jest.fn(() => '2:30 PM'),
-}))
 
 describe('DateTime', () => {
   beforeEach(() => {
@@ -27,8 +22,8 @@ describe('DateTime', () => {
   it('displays the current date', () => {
     render(<DateTime />)
     
-    // Should display the formatted date
-    const dateElement = screen.getByText(/Monday, January 15/i)
+    // Should display the formatted date - actual format is "Mon, Jan 15, 2024"
+    const dateElement = screen.getByText(/Mon, Jan 15, 2024/i)
     expect(dateElement).toBeInTheDocument()
   })
 
@@ -36,7 +31,7 @@ describe('DateTime', () => {
     render(<DateTime />)
     
     const timeElement = screen.getByText('2:30 PM')
-    const dateElement = screen.getByText(/Monday, January 15/i)
+    const dateElement = screen.getByText(/Mon, Jan 15, 2024/i)
     
     expect(timeElement).toBeInTheDocument()
     expect(dateElement).toBeInTheDocument()
@@ -48,11 +43,13 @@ describe('DateTime', () => {
     // Initial time
     expect(screen.getByText('2:30 PM')).toBeInTheDocument()
     
-    // Fast forward 1 minute
-    jest.advanceTimersByTime(60000)
+    // Fast forward 1 minute and wrap in act
+    act(() => {
+      jest.advanceTimersByTime(60000)
+    })
     
-    // Time should update (though mocked, the component should handle updates)
-    expect(screen.getByText('2:30 PM')).toBeInTheDocument()
+    // Time should update to 2:31 PM
+    expect(screen.getByText('2:31 PM')).toBeInTheDocument()
   })
 
   describe('Accessibility', () => {
@@ -68,7 +65,7 @@ describe('DateTime', () => {
       
       // The component should have accessible text content
       expect(screen.getByText('2:30 PM')).toBeInTheDocument()
-      expect(screen.getByText(/Monday, January 15/i)).toBeInTheDocument()
+      expect(screen.getByText(/Mon, Jan 15, 2024/i)).toBeInTheDocument()
     })
   })
 
@@ -78,7 +75,7 @@ describe('DateTime', () => {
       
       // Component should render without errors on different viewport sizes
       expect(screen.getByText('2:30 PM')).toBeInTheDocument()
-      expect(screen.getByText(/Monday, January 15/i)).toBeInTheDocument()
+      expect(screen.getByText(/Mon, Jan 15, 2024/i)).toBeInTheDocument()
     })
   })
 
@@ -89,7 +86,7 @@ describe('DateTime', () => {
       
       render(<DateTime />)
       
-      expect(screen.getByText('2:30 PM')).toBeInTheDocument() // Mocked return value
+      expect(screen.getByText('12:00 AM')).toBeInTheDocument()
     })
 
     it('handles date transitions', () => {
@@ -98,7 +95,7 @@ describe('DateTime', () => {
       
       render(<DateTime />)
       
-      expect(screen.getByText('2:30 PM')).toBeInTheDocument() // Mocked return value
+      expect(screen.getByText('11:59 PM')).toBeInTheDocument()
     })
   })
 })

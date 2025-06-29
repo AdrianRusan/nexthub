@@ -51,6 +51,11 @@ jest.mock('@stream-io/video-react-sdk', () => ({
       getOrCreate: jest.fn().mockResolvedValue({}),
     })),
   }),
+  useCall: () => ({
+    id: 'test-call-id',
+    leave: jest.fn().mockResolvedValue({}),
+    getOrCreate: jest.fn().mockResolvedValue({}),
+  }),
   CallControls: ({ children }) => <div data-testid="call-controls">{children}</div>,
   CallParticipantsList: ({ onClose }) => <div data-testid="participants-list" onClick={onClose}>Participants</div>,
   CallStatsButton: () => <div data-testid="call-stats">Stats</div>,
@@ -58,11 +63,13 @@ jest.mock('@stream-io/video-react-sdk', () => ({
     JOINED: 'joined',
     CONNECTING: 'connecting',
     IDLE: 'idle',
+    RECONNECTING: 'reconnecting',
   },
   PaginatedGridLayout: () => <div data-testid="grid-layout">Grid Layout</div>,
   SpeakerLayout: ({ participantsBarPosition }) => <div data-testid="speaker-layout" data-position={participantsBarPosition}>Speaker Layout</div>,
   useCallStateHooks: () => ({
     useCallCallingState: () => 'joined',
+    useLocalParticipant: () => ({ isOwner: true }),
   }),
 }))
 
