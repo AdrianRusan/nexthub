@@ -3,8 +3,10 @@ const nextConfig = {
   // Experimental features for Next.js 15
   experimental: {
     optimizePackageImports: ['lucide-react', '@radix-ui/react-icons'],
-    serverComponentsExternalPackages: ['@prisma/client'],
   },
+
+  // Server external packages (moved from experimental)
+  serverExternalPackages: ['@prisma/client', '@stream-io/video-react-sdk'],
 
   // Performance optimizations
   images: {
@@ -18,19 +20,7 @@ const nextConfig = {
 
   // Webpack optimizations
   webpack: (config, { isServer }) => {
-    // Optimize bundle size
-    config.optimization.splitChunks = {
-      chunks: 'all',
-      cacheGroups: {
-        vendor: {
-          test: /[\\/]node_modules[\\/]/,
-          name: 'vendors',
-          chunks: 'all',
-        },
-      },
-    };
-
-    // Reduce bundle size by excluding unnecessary modules
+    // Basic fallbacks for client-side
     if (!isServer) {
       config.resolve.fallback = {
         ...config.resolve.fallback,
@@ -107,6 +97,9 @@ const nextConfig = {
 
   // PoweredBy header removal
   poweredByHeader: false,
+
+  // Disable static optimization to prevent prerendering issues with auth
+  trailingSlash: false,
 
   // Generate standalone output for containerization
   output: process.env.BUILD_STANDALONE === 'true' ? 'standalone' : undefined,

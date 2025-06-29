@@ -7,6 +7,9 @@ import { useUser } from "@clerk/nextjs"
 import { useStreamVideoClient } from "@stream-io/video-react-sdk";
 import { useRouter } from "next/navigation";
 
+// Force dynamic rendering to avoid prerendering issues with auth
+export const dynamic = 'force-dynamic';
+
 
 const Table = ({ title, description }: { title: string, description?: string }) => (
   <div className="flex flex-col items-start gap-2 xl:flex-row">

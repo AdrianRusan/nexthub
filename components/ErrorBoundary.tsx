@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { ErrorInfo } from 'react'
 import { ErrorBoundary as ReactErrorBoundary } from 'react-error-boundary'
 import { AlertTriangle, RefreshCw, Home } from 'lucide-react'
 import { Button } from './ui/button'
@@ -65,7 +65,7 @@ function ErrorFallback({ error, resetErrorBoundary }: ErrorFallbackProps) {
 interface ErrorBoundaryProps {
   children: React.ReactNode
   fallback?: React.ComponentType<ErrorFallbackProps>
-  onError?: (error: Error, errorInfo: { componentStack: string }) => void
+  onError?: (error: Error, errorInfo: ErrorInfo) => void
 }
 
 export function ErrorBoundary({ 
@@ -73,11 +73,11 @@ export function ErrorBoundary({
   fallback: Fallback = ErrorFallback,
   onError 
 }: ErrorBoundaryProps) {
-  const handleError = (error: Error, errorInfo: { componentStack: string }) => {
+  const handleError = (error: Error, errorInfo: ErrorInfo) => {
     // Log error to console in development
     if (process.env.NODE_ENV === 'development') {
       console.error('Error caught by ErrorBoundary:', error)
-      console.error('Component stack:', errorInfo.componentStack)
+      console.error('Component stack:', errorInfo.componentStack || 'No component stack available')
     }
     
     // Send error to monitoring service in production
@@ -86,7 +86,7 @@ export function ErrorBoundary({
       console.error('Production error:', {
         message: error.message,
         stack: error.stack,
-        componentStack: errorInfo.componentStack,
+        componentStack: errorInfo.componentStack || null,
       })
     }
     

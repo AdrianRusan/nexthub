@@ -1,4 +1,4 @@
-import { clerkMiddleware, createRouteMatcher, type AuthObject } from '@clerk/nextjs/server';
+import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server';
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { Ratelimit } from '@upstash/ratelimit';
@@ -67,7 +67,9 @@ export default clerkMiddleware(async (auth, req: NextRequest) => {
 
   // Apply rate limiting for API routes
   if (req.nextUrl.pathname.startsWith('/api') && ratelimit) {
-    const ip = req.ip ?? '127.0.0.1';
+    const ip = req.headers.get('x-forwarded-for')?.split(',')[0] ?? 
+               req.headers.get('x-real-ip') ?? 
+               '127.0.0.1';
     const { success, limit, reset, remaining } = await ratelimit.limit(`ratelimit_middleware_${ip}`);
 
     response.headers.set('X-RateLimit-Limit', limit.toString());
@@ -84,7 +86,10 @@ export default clerkMiddleware(async (auth, req: NextRequest) => {
 
   // Handle authentication for protected routes
   if (protectedRoutes(req) && !publicRoutes(req)) {
-    auth().protect();
+    const authResult = await auth();
+    if (!authResult.userId) {
+      return NextResponse.redirect(new URL('/sign-in', req.url));
+    }
   }
 
   return response;
