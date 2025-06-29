@@ -53,7 +53,7 @@ const MeetingRoom = () => {
         </div>
       </div>
 
-      <div className='flex-wrap fixed bottom-0 flex w-full items-center justify-center gap-5'>
+      <div className='flex-wrap fixed bottom-0 flex w-full items-center justify-center gap-5' data-testid="call-controls">
         <CallControls onLeave={() => router.push('/')} />
 
         <DropdownMenu>
