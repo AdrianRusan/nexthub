@@ -2,6 +2,8 @@ import { ReactNode } from 'react'
 import {
   Dialog,
   DialogContent,
+  DialogTitle,
+  DialogDescription,
 } from "@/components/ui/dialog"
 import Image from 'next/image'
 import { Button } from './ui/button'
@@ -35,9 +37,12 @@ const MeetingModal = ({ isOpen, onClose, title, className, children, handleClick
               />
             </div>
           )}
-          <h1 className={cn('text-3xl font-bold leading-[42px]', className)}>
+          <DialogTitle className={cn('text-3xl font-bold leading-[42px]', className)}>
             {title}
-          </h1>
+          </DialogTitle>
+          <DialogDescription className="sr-only">
+            Dialog for {title.toLowerCase()}
+          </DialogDescription>
           {children}
           <Button className='bg-blue-1 focus-visible:ring-0 focus-visible:ring-offset-0' onClick={handleClick}>
             {buttonIcon && (
