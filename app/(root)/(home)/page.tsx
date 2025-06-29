@@ -2,6 +2,9 @@ import CallList from '@/components/CallList';
 import DateTime from '@/components/DateTime';
 import MeetingTypeList from '@/components/MeetingTypeList';
 
+// Force dynamic rendering to avoid prerendering issues with auth
+export const dynamic = 'force-dynamic';
+
 const Home = () => {
   return (
     <section className='flex size-full flex-col gap-10 text-white'>

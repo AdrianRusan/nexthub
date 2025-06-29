@@ -1,5 +1,7 @@
 import CallList from "@/components/CallList"
 
+// Force dynamic rendering to avoid prerendering issues with auth
+export const dynamic = 'force-dynamic';
 
 const Previous = () => {
   return (
