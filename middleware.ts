@@ -45,13 +45,21 @@ export default clerkMiddleware(async (auth, req: NextRequest) => {
   response.headers.set('X-Content-Type-Options', 'nosniff');
   response.headers.set('Referrer-Policy', 'origin-when-cross-origin');
   response.headers.set('Permissions-Policy', 'camera=(self), microphone=(self), geolocation=()');
-  
-  // CSP Header
+
+  // CSP Header - Environment-aware for Clerk and Stream.io development domains
+  const isDevelopment = process.env.NODE_ENV === 'development';
+
   const cspHeader = `
     default-src 'self';
-    script-src 'self' 'unsafe-eval' 'unsafe-inline' https://js.clerk.dev https://clerk.nexthub.com;
+    script-src 'self' 'unsafe-eval' 'unsafe-inline'
+      https://js.clerk.dev
+      https://clerk.nexthub.com
+      ${isDevelopment ? 'https://*.clerk.accounts.dev' : ''};
     style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
-    img-src 'self' blob: data: https://img.clerk.com https://images.clerk.dev;
+    img-src 'self' blob: data:
+      https://img.clerk.com
+      https://images.clerk.dev
+      ${isDevelopment ? 'https://*.clerk.accounts.dev' : ''};
     font-src 'self' https://fonts.gstatic.com;
     object-src 'none';
     base-uri 'self';
@@ -59,10 +67,18 @@ export default clerkMiddleware(async (auth, req: NextRequest) => {
     frame-ancestors 'none';
     block-all-mixed-content;
     upgrade-insecure-requests;
-    connect-src 'self' https://api.clerk.dev https://clerk.nexthub.com wss://video.stream-io-api.com https://stream-io-api.com;
-    media-src 'self' https://stream-io-api.com;
+    connect-src 'self'
+      https://api.clerk.dev
+      https://clerk.nexthub.com
+      ${isDevelopment ? 'https://*.clerk.accounts.dev' : ''}
+      wss://video.stream-io-api.com
+      https://stream-io-api.com
+      ${isDevelopment ? 'wss://*.stream-io-api.com https://*.stream-io-api.com' : ''};
+    media-src 'self'
+      https://stream-io-api.com
+      ${isDevelopment ? 'https://*.stream-io-api.com' : ''};
   `.replace(/\s{2,}/g, ' ').trim();
-  
+
   response.headers.set('Content-Security-Policy', cspHeader);
 
   // Apply rate limiting for API routes
