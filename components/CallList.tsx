@@ -147,8 +147,18 @@ const CallList = ({ type }: { type: 'ended' | 'upcoming' | 'upcomingHome' | 'rec
           )}
         </>
       )) : (
-        <div className='grid grid-cols-1 gap-5 xl:grid-cols-2'>
-          <h1>{noCallsMessage}</h1>
+        <div className='flex flex-col items-center justify-center py-16 px-4 text-center'>
+          <div className="mb-6 rounded-full bg-dark-3 p-8 flex items-center justify-center">
+            <svg className="w-16 h-16 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+            </svg>
+          </div>
+          <h2 className='text-2xl font-semibold mb-3 text-white'>{noCallsMessage}</h2>
+          <p className='text-gray-400 text-base max-w-md'>
+            {type === 'upcoming' && 'Schedule your first meeting to get started with video conferencing'}
+            {type === 'ended' && 'Your previous meetings will appear here once you\'ve completed some calls'}
+            {type === 'recordings' && 'Recordings of your meetings will be available here after they are processed'}
+          </p>
         </div>
       )}
     </>

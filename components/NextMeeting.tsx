@@ -25,7 +25,7 @@ const NextMeeting = ({ title, date, buttonIcon1, buttonText, handleClick, link }
       <div className='flex gap-2'>
         <Button onClick={handleClick} className='rounded bg-blue-1 px-6'>
           {buttonIcon1 && (
-            <Image src={buttonIcon1} alt='tbd' width={20} height={20} />
+            <Image src={buttonIcon1} alt={buttonText || 'Action'} width={20} height={20} />
           )}
           &nbsp; {buttonText}
         </Button>
@@ -38,7 +38,7 @@ const NextMeeting = ({ title, date, buttonIcon1, buttonText, handleClick, link }
         >
           <Image
             src='/icons/copy.svg'
-            alt='tbd'
+            alt='Copy link'
             width={20}
             height={20}
           />

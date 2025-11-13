@@ -1,5 +1,6 @@
 import { cn } from '@/lib/utils'
 import Image from 'next/image'
+import React from 'react'
 
 interface HomeCardProps {
   className: string
@@ -9,7 +10,7 @@ interface HomeCardProps {
   handleClick: () => void
 }
 
-const HomeCard = ({ className, img, title, description, handleClick }: HomeCardProps) => {
+const HomeCard = React.memo(({ className, img, title, description, handleClick }: HomeCardProps) => {
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault()
@@ -43,6 +44,8 @@ const HomeCard = ({ className, img, title, description, handleClick }: HomeCardP
         </p>
       </div>
     </div >)
-}
+});
+
+HomeCard.displayName = 'HomeCard';
 
 export default HomeCard

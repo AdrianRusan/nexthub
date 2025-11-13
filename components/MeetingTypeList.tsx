@@ -11,6 +11,13 @@ import { Textarea } from "./ui/textarea"
 import ReactDatePicker from "react-datepicker"
 import { setMinutes, setHours } from "date-fns";
 import { Input } from "./ui/input"
+import { z } from "zod"
+
+const meetingSchema = z.object({
+  description: z.string().max(500, 'Description must be less than 500 characters').optional(),
+  dateTime: z.date().min(new Date(), 'Meeting date must be in the future'),
+  link: z.string().url('Invalid URL format').optional().or(z.literal('')),
+});
 
 const MeetingTypeList = () => {
   const router = useRouter()
@@ -22,6 +29,7 @@ const MeetingTypeList = () => {
     link: '',
   });
   const [callDetails, setCallDetails] = useState<Call>()
+  const [isCreating, setIsCreating] = useState(false);
 
   const { toast } = useToast();
   const { user } = useUser();
@@ -31,7 +39,19 @@ const MeetingTypeList = () => {
   const createMeeting = async () => {
     if (!client || !user) return;
 
+    setIsCreating(true);
     try {
+      // Validate input
+      const validation = meetingSchema.safeParse(values);
+      if (!validation.success) {
+        toast({
+          title: 'Validation Error',
+          description: validation.error.errors[0].message,
+          duration: 5000
+        });
+        return;
+      }
+
       if (!values.dateTime) {
         toast({
           title: 'Error',
@@ -73,6 +93,41 @@ const MeetingTypeList = () => {
         description: 'I could not create the meeting. Please try again later.',
         duration: 5000
       })
+    } finally {
+      setIsCreating(false);
+    }
+  }
+
+  const validateAndJoinMeeting = () => {
+    if (!values.link || !values.link.trim()) {
+      toast({
+        title: 'Error',
+        description: 'Please enter a valid meeting link',
+        duration: 5000
+      });
+      return;
+    }
+
+    try {
+      const url = new URL(values.link);
+      const baseUrl = new URL(process.env.NEXT_PUBLIC_BASE_URL || '');
+
+      if (url.origin !== baseUrl.origin || !url.pathname.startsWith('/meeting/')) {
+        toast({
+          title: 'Invalid Link',
+          description: 'Please enter a valid meeting link from this platform',
+          duration: 5000
+        });
+        return;
+      }
+
+      router.push(values.link);
+    } catch {
+      toast({
+        title: 'Invalid Link',
+        description: 'Please enter a valid meeting URL',
+        duration: 5000
+      });
     }
   }
 
@@ -164,7 +219,7 @@ const MeetingTypeList = () => {
         isOpen={meetingState === 'isInstantMeeting'}
         onClose={() => setMeetingState(undefined)}
         title="Start an Instant Meeting"
-        buttonText="Start Meeting"
+        buttonText={isCreating ? "Creating..." : "Start Meeting"}
         className="text-center"
         handleClick={createMeeting}
       />
@@ -173,9 +228,9 @@ const MeetingTypeList = () => {
         isOpen={meetingState === 'isJoiningMeeting'}
         onClose={() => setMeetingState(undefined)}
         title="Paste the Invitation Link"
-        buttonText="Join Meeting"
+        buttonText={isCreating ? "Joining..." : "Join Meeting"}
         className="text-center"
-        handleClick={() => router.push(values.link)}
+        handleClick={validateAndJoinMeeting}
       >
         <Input
           placeholder="Invitation Link"

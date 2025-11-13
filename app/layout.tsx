@@ -94,6 +94,32 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://api.clerk.dev" />
         <link rel="dns-prefetch" href="https://stream-io-api.com" />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "WebApplication",
+              "name": "NextHub",
+              "description": "Modern video conferencing platform with unlimited participants",
+              "url": env.NEXT_PUBLIC_BASE_URL,
+              "applicationCategory": "CommunicationApplication",
+              "operatingSystem": "Any",
+              "offers": {
+                "@type": "Offer",
+                "price": "0",
+                "priceCurrency": "USD"
+              },
+              "featureList": [
+                "Video conferencing",
+                "Screen sharing",
+                "Meeting recordings",
+                "Personal meeting rooms",
+                "Unlimited participants"
+              ]
+            })
+          }}
+        />
       </head>
       <ClerkProvider
         appearance={{
