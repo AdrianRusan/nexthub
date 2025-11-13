@@ -23,8 +23,10 @@ export const tokenProvider = async () => {
   }
 
   try {
-    // Ensure user exists in database
-    await ensureUserInDatabase(user);
+    // Ensure user exists in database (optional - graceful degradation)
+    ensureUserInDatabase(user).catch(err => {
+      log.error("DB sync failed but continuing", { error: err.message });
+    });
 
     const client = new StreamClient(env.NEXT_PUBLIC_STREAM_API_KEY, env.STREAM_SECRET_KEY);
 
@@ -94,13 +96,8 @@ async function ensureUserInDatabase(clerkUser: any) {
         });
 
         log.auth("User updated in database", clerkUser.id);
-      } else {
-        // Just update last active time
-        await db.user.update({
-          where: { clerkId: clerkUser.id },
-          data: { lastActiveAt: new Date() }
-        });
       }
+      // Removed: excessive lastActiveAt updates on every request
     }
   } catch (error) {
     log.error("Failed to sync user with database", {
