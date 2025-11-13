@@ -46,20 +46,18 @@ export default clerkMiddleware(async (auth, req: NextRequest) => {
   response.headers.set('Referrer-Policy', 'origin-when-cross-origin');
   response.headers.set('Permissions-Policy', 'camera=(self), microphone=(self), geolocation=()');
 
-  // CSP Header - Environment-aware for Clerk and Stream.io development domains
-  const isDevelopment = process.env.NODE_ENV === 'development';
-
+  // CSP Header - Includes Clerk and Stream.io domains (dev + prod)
   const cspHeader = `
     default-src 'self';
     script-src 'self' 'unsafe-eval' 'unsafe-inline'
       https://js.clerk.dev
-      https://clerk.nexthub.com
-      ${isDevelopment ? 'https://*.clerk.accounts.dev' : ''};
+      https://*.clerk.accounts.dev
+      https://clerk.nexthub.com;
     style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
     img-src 'self' blob: data:
       https://img.clerk.com
       https://images.clerk.dev
-      ${isDevelopment ? 'https://*.clerk.accounts.dev' : ''};
+      https://*.clerk.accounts.dev;
     font-src 'self' https://fonts.gstatic.com;
     object-src 'none';
     base-uri 'self';
@@ -69,14 +67,15 @@ export default clerkMiddleware(async (auth, req: NextRequest) => {
     upgrade-insecure-requests;
     connect-src 'self'
       https://api.clerk.dev
+      https://*.clerk.accounts.dev
       https://clerk.nexthub.com
-      ${isDevelopment ? 'https://*.clerk.accounts.dev' : ''}
       wss://video.stream-io-api.com
+      wss://*.stream-io-api.com
       https://stream-io-api.com
-      ${isDevelopment ? 'wss://*.stream-io-api.com https://*.stream-io-api.com' : ''};
+      https://*.stream-io-api.com;
     media-src 'self'
       https://stream-io-api.com
-      ${isDevelopment ? 'https://*.stream-io-api.com' : ''};
+      https://*.stream-io-api.com;
   `.replace(/\s{2,}/g, ' ').trim();
 
   response.headers.set('Content-Security-Policy', cspHeader);
